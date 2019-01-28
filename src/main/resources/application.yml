@@ -10,7 +10,7 @@ spring:
       ddl-auto: update
     open-in-view: false
   resources:
-    #�Զ��徲̬��Դ·��
+    #自定义静态资源路径
     static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/,classpath:/public/
 server:
-  port: 9999
+  port: 7070
