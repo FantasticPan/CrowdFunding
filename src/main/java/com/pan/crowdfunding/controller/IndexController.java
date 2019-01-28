@@ -49,8 +49,10 @@ public class IndexController {
     public String login(@RequestBody JSONObject jsonObject) {
         log.info("login：登录");
 
-        User user = userRepository.findUsersByPhone(jsonObject.getString("phone"));
-        if (user == null || !user.getPassword().equals(jsonObject.getString("password"))) {
+        JSONObject info = jsonObject.getJSONObject("data");
+        User user = userRepository.findUsersByPhone(info.getString("phone"));
+        System.out.println(user.toString());
+        if (user == null || !user.getPassword().equals(info.getString("password"))) {
             return "err";
         }
         return "suc";

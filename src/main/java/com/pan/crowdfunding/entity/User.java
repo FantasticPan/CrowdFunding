@@ -27,6 +27,6 @@ public class User {
     private Integer province;
     private String city;
     private Integer focusNum;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<User> focus;
 }
