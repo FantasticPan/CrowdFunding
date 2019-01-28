@@ -1,11 +1,13 @@
 package com.pan.crowdfunding.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.pan.crowdfunding.entity.User;
 import com.pan.crowdfunding.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -26,14 +28,17 @@ public class IndexController {
 
     @PostMapping("/register")
     @ResponseBody
-    public String register(String name, String phone, String password, String repeatPass, String identifyingCode) {
+    public String register(@RequestBody JSONObject jsonObject) {
         log.info("注册");
+        JSONObject info = jsonObject.getJSONObject("data");
+        String password = info.getString("password");
+        String repeatPass = info.getString("repeatPass");
         if (!password.equals(repeatPass)) {
             return "err";
         }
         User user = new User();
-        user.setName(name);
-        user.setPhone(phone);
+        user.setName(info.getString("name"));
+        user.setPhone(info.getString("phone"));
         user.setPassword(password);
         userRepository.save(user);
         return "suc";
@@ -41,11 +46,11 @@ public class IndexController {
 
     @PostMapping("/login")
     @ResponseBody
-    public String login(String phone, String password) {
+    public String login(@RequestBody JSONObject jsonObject) {
         log.info("login：登录");
 
-        User user = userRepository.findUsersByPhone(phone);
-        if (user == null || !user.getPassword().equals(password)) {
+        User user = userRepository.findUsersByPhone(jsonObject.getString("phone"));
+        if (user == null || !user.getPassword().equals(jsonObject.getString("password"))) {
             return "err";
         }
         return "suc";
@@ -53,9 +58,9 @@ public class IndexController {
 
     @PostMapping("/canUsePhone")
     @ResponseBody
-    public String canUsePhone(String phone) {
+    public String canUsePhone(@RequestBody JSONObject jsonObject) {
         log.info("canUsePhone：手机可用检查");
-        if (userRepository.findUsersByPhone(phone) == null) {
+        if (userRepository.findUsersByPhone(jsonObject.getString("phone")) == null) {
             return "err";
         }
         return "suc";
